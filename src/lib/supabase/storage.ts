@@ -2,6 +2,14 @@ import { supabase } from './config';
 import { STORAGE_BUCKET } from './constants';
 import type { StorageFile } from './types';
 
+interface DocumentRow {
+  id: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  created_at: string;
+}
+
 export async function uploadFile(file: File) {
   try {
     // Sanitize filename - replace special chars and spaces with underscores
@@ -27,7 +35,22 @@ export async function uploadFile(file: File) {
       throw error;
     }
 
-    return data;
+    // Get the document ID after upload
+    const { data: document, error: docError } = await supabase
+      .from('documents')
+      .select('id')
+      .eq('storage_path', fileName)
+      .single();
+
+    if (docError) {
+      console.error('Erro ao obter ID do documento:', docError);
+      throw docError;
+    }
+
+    return {
+      storageData: data,
+      documentId: document.id
+    };
   } catch (error) {
     console.error('Erro no upload:', error);
     throw error;
@@ -67,7 +90,7 @@ export async function listFiles(): Promise<StorageFile[]> {
       throw error;
     }
 
-    return data.map(doc => ({
+    return data.map((doc: DocumentRow) => ({
       id: doc.id,
       name: doc.file_name,
       created_at: doc.created_at,

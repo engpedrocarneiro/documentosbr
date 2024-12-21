@@ -1,7 +1,14 @@
-import { FileText, Brain } from 'lucide-react';
+import { Brain, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Hero() {
+  const handleChatClick = () => {
+    const chatButton = document.querySelector('[data-chat-button]') as HTMLButtonElement;
+    if (chatButton) {
+      chatButton.click();
+    }
+  };
+
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       <div className="max-w-7xl mx-auto">
@@ -15,6 +22,12 @@ export function Hero() {
               <nav className="flex space-x-8">
                 <a href="https://ianovar.com.br" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
                   Sobre nós
+                </a>
+                <a href="#features" className="text-gray-300 hover:text-white">
+                  Recursos
+                </a>
+                <a href="#demo" className="text-gray-300 hover:text-white">
+                  Demo
                 </a>
                 <a href="#contato" className="text-gray-300 hover:text-white">
                   Contato
@@ -31,7 +44,7 @@ export function Hero() {
               </h1>
               <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                 Transforme seus documentos em insights estratégicos com o poder da Inteligência Artificial.
-                Nossa plataforma revoluciona a forma como sua empresa processa e analisa informações.
+                Experimente nosso assistente virtual e descubra como podemos revolucionar sua gestão documental.
               </p>
               <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                 <div className="rounded-md shadow">
@@ -43,12 +56,13 @@ export function Hero() {
                   </Link>
                 </div>
                 <div className="mt-3 sm:mt-0 sm:ml-3">
-                  <Link
-                    to="/login"
+                  <button
+                    onClick={handleChatClick}
                     className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-gray-800 hover:bg-gray-700 md:py-4 md:text-lg md:px-10"
                   >
-                    Acessar plataforma
-                  </Link>
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Experimente o Chat
+                  </button>
                 </div>
               </div>
             </div>

@@ -35,7 +35,9 @@ export async function processDocument(documentId: string): Promise<ProcessedDocu
       .eq('id', documentId);
 
     // Process with OpenAI
+    console.log('Iniciando processamento com OpenAI...');
     const result = await processWithOpenAI(text, DOCUMENT_ANALYSIS_PROMPT);
+    console.log('Resultado do processamento:', result);
 
     // Update document status to completed
     await supabase
@@ -47,7 +49,8 @@ export async function processDocument(documentId: string): Promise<ProcessedDocu
       .eq('id', documentId);
 
     // Save processed content
-    await supabase
+    console.log('Salvando conteúdo processado...');
+    const { data: contentData, error: contentError } = await supabase
       .from('document_content')
       .insert({
         document_id: documentId,
@@ -56,7 +59,16 @@ export async function processDocument(documentId: string): Promise<ProcessedDocu
         relationships: result.relationships,
         tags: result.tags,
         confidence: result.metadata.confidence
-      });
+      })
+      .select()
+      .single();
+
+    if (contentError) {
+      console.error('Erro ao salvar conteúdo:', contentError);
+      throw contentError;
+    }
+
+    console.log('Conteúdo salvo com sucesso:', contentData);
 
     return result;
   } catch (error) {
